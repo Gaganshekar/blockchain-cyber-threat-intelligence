@@ -2106,3 +2106,157 @@ line-height:1.8;
     }
 
 }
+/* ==================================================
+   HOME - RECENT THREAT REPORTS
+================================================== */
+
+.recent-threat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: #111827;
+}
+
+.recent-threat-table thead {
+    display: table-header-group;
+}
+
+.recent-threat-table tbody {
+    display: table-row-group;
+}
+
+.recent-threat-table tr {
+    display: table-row;
+}
+
+.recent-threat-table th,
+.recent-threat-table td {
+    display: table-cell;
+    padding: 14px 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    text-align: center;
+    color: white;
+}
+
+.recent-threat-table th {
+    background: #00bcd4;
+    color: #000;
+    font-weight: 700;
+}
+
+.recent-threat-table tbody tr:nth-child(even) {
+    background: #1b2435;
+}
+
+.recent-threat-table tbody tr:hover {
+    background: #263248;
+}
+
+.recent-threat-table td:nth-child(2) {
+    font-weight: 600;
+    text-align: left;
+}
+
+.recent-threat-table td:nth-child(3),
+.recent-threat-table td:nth-child(4) {
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+
+    .recent-threat-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+}
+.threat-count {
+    font-size: 18px;
+    color: #00ff99;
+    font-weight: 600;
+}
+/* ==================================================
+   HOME RECENT THREAT TABLE
+================================================== */
+
+.recent-threat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: #111827;
+}
+
+.recent-threat-table th {
+    background: #00bcd4;
+    color: #000;
+    padding: 14px;
+    text-align: center;
+}
+
+.recent-threat-table td {
+    padding: 14px;
+    border: 1px solid #333;
+    color: white;
+    text-align: center;
+}
+
+.recent-threat-table tbody tr:nth-child(even) {
+    background: #1b2435;
+}
+
+.recent-threat-table tbody tr:hover {
+    background: #263248;
+}
+
+.recent-threat-table td:nth-child(2) {
+    text-align: left;
+    font-weight: 600;
+}
+
+.threat-count {
+    color: #00ff99;
+    font-size: 18px;
+    font-weight: 600;
+}
+/* ================= THREAT TABLE ================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+thead {
+    background: #111827;
+    color: white;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background: #f3f4f6;
+}
+
+.threat-count {
+    font-size: 14px;
+    font-weight: normal;
+    opacity: 0.7;
+}

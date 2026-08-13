@@ -332,79 +332,66 @@ Threat Statistics
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
+<!-- ================= RECENT THREATS ================= -->
+
 <!-- ================= RECENT THREATS ================= -->
 
 <section class="section">
 
-<h2>
+    <h2>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Latest Threat Reports
+        <span class="threat-count">({{ threats|length }})</span>
+    </h2>
 
-<i class="fa-solid fa-clock-rotate-left"></i>
+    <div class="table-container">
 
-Latest Threat Reports
+        <table>
 
-</h2>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Threat</th>
+                    <th>Category</th>
+                    <th>Severity</th>
+                    <th>Reporter</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
 
-<table>
+            <tbody>
 
-<thead>
+                {% if threats %}
 
-<thead>
+                    {% for row in threats %}
 
-<tr>
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ row.title }}</td>
+                        <td>{{ row.category }}</td>
+                        <td>{{ row.severity }}</td>
+                        <td>{{ row.reporter }}</td>
+                        <td>{{ row.created_at }}</td>
+                    </tr>
 
-<th>No.</th>
+                    {% endfor %}
 
-<th>Threat</th>
+                {% else %}
 
-<th>Category</th>
+                    <tr>
+                        <td colspan="6" style="text-align: center;">
+                            No threat reports available.
+                        </td>
+                    </tr>
 
-<th>Severity</th>
+                {% endif %}
 
-<th>Reporter</th>
+            </tbody>
 
-<th>Date</th>
+        </table>
 
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for row in threats %}
-
-<tr>
-
-<td>
-    {{ loop.index }}
-</td>
-
-<td>
-    {{ row.title }}
-</td>
-
-<td>
-    {{ row.category }}
-</td>
-
-<td>
-    {{ row.severity }}
-</td>
-
-<td>
-    {{ row.reporter }}
-</td>
-
-<td>
-    {{ row.created_at }}
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
+    </div>
 
 </section>
 

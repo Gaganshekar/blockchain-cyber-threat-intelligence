@@ -441,7 +441,16 @@ def home():
         latest.append(threat)
 
         seen.add(key)
+        print("HOME TOTAL:", total)
+        print("HOME DISPLAY:", len(latest))
 
+        for item in latest:
+            print(
+                "HOME THREAT:",
+                item.get("id"),
+                item.get("title"),
+                item.get("indicator")
+            )
 
     return render_template(
         "index.html",
@@ -1946,10 +1955,12 @@ def open_browser():
 # APPLICATION START
 # ==================================================
 
-if __name__ == "__main__":
+# Rebuild blockchain from saved database data
+# This runs when Flask is imported by Gunicorn on Render.
+rebuild_blockchain()
 
-    # Rebuild blockchain from saved database data
-    rebuild_blockchain()
+
+if __name__ == "__main__":
 
     # Local development server
     app.run(
