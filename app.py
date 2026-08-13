@@ -341,7 +341,23 @@ def rebuild_blockchain():
 
     except Exception as error:
 
-        print("BLOCKCHAIN REBUILD ERROR:", error)
+        print(
+            "BLOCKCHAIN REBUILD ERROR:",
+            error
+        )
+
+        return
+
+    try:
+
+        database.clear_blockchain_table()
+
+    except Exception as error:
+
+        print(
+            "BLOCKCHAIN CLEAR ERROR:",
+            error
+        )
 
         return
 
@@ -375,6 +391,15 @@ def rebuild_blockchain():
                 block_data
             )
 
+            database.save_block(
+                block.index,
+                block.previous_hash,
+                block.hash,
+                block.nonce,
+                block.timestamp,
+                block.data
+            )
+
             database.update_block_index(
                 threat["id"],
                 block.index
@@ -386,7 +411,6 @@ def rebuild_blockchain():
                 "BLOCKCHAIN REBUILD BLOCK ERROR:",
                 error
             )
-
 
 # ==================================================
 # HOME PAGE
@@ -417,8 +441,6 @@ def home():
 
         seen.add(key)
 
-        if len(latest) == 10:
-            break
 
     return render_template(
         "index.html",
