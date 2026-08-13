@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from flask import (
     Flask,
+    json,
     render_template,
     request,
     redirect,
@@ -1233,14 +1234,19 @@ def blockchain_page():
 
         for row in rows:
 
-            data = row.get("data")
+            data = row.get("data", {})
 
             if isinstance(data, str):
 
                 try:
                     data = json.loads(data)
+
                 except Exception:
+
                     data = {}
+
+            if not isinstance(data, dict):
+                data = {}
 
             blocks.append({
                 "index": row.get("block_index", 0),
@@ -1248,7 +1254,7 @@ def blockchain_page():
                 "previous_hash": row.get("previous_hash", ""),
                 "hash": row.get("current_hash", ""),
                 "nonce": row.get("nonce", 0),
-                "data": data or {}
+                "data": data
             })
 
         valid = blockchain.is_chain_valid()
@@ -1263,14 +1269,20 @@ def blockchain_page():
         )
 
         blocks = []
+
         valid = False
+
         difficulty = blockchain.difficulty
 
     return render_template(
         "blockchain.html",
+
         blockchain=blocks,
+
         valid=valid,
+
         total_blocks=len(blocks),
+
         difficulty=difficulty
     )
 # ==================================================
