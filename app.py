@@ -348,7 +348,7 @@ def rebuild_blockchain():
     seen = set()
 
     # Oldest first
-    for threat in reversed(threats):
+    for threat in threats:
 
         key = (
             threat["title"],
