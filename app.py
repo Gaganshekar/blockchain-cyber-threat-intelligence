@@ -2080,10 +2080,6 @@ def open_browser():
 # DATETIME FORMATTER - UTC TO IST
 # ==================================================
 
-from zoneinfo import ZoneInfo
-
-IST = ZoneInfo("Asia/Kolkata")
-
 
 def convert_to_ist(value):
 
@@ -2091,48 +2087,33 @@ def convert_to_ist(value):
         return ""
 
     try:
-
-        value = str(value).strip()
-
-        # ------------------------------------------
-        # ISO format
-        # Example:
-        # 2026-08-03T09:21:40+00:00
-        # ------------------------------------------
-
-        if "T" in value:
-
-            dt = datetime.fromisoformat(
-                value.replace("Z", "+00:00")
-            )
-
-        # ------------------------------------------
-        # SQLite CURRENT_TIMESTAMP
-        # Example:
-        # 2026-08-03 09:21:40
-        # ------------------------------------------
+        # Already a datetime object
+        if isinstance(value, datetime):
+            dt = value
 
         else:
+            value = str(value).strip()
 
-            dt = datetime.strptime(
-                value,
-                "%Y-%m-%d %H:%M:%S"
-            )
+            # ISO format
+            if "T" in value:
+                dt = datetime.fromisoformat(
+                    value.replace("Z", "+00:00")
+                )
 
-        # ------------------------------------------
+            # SQLite CURRENT_TIMESTAMP format
+            else:
+                dt = datetime.strptime(
+                    value,
+                    "%Y-%m-%d %H:%M:%S"
+                )
+
         # Database timestamps are UTC
-        # ------------------------------------------
-
         if dt.tzinfo is None:
-
             dt = dt.replace(
                 tzinfo=timezone.utc
             )
 
-        # ------------------------------------------
         # UTC -> IST
-        # ------------------------------------------
-
         dt = dt.astimezone(IST)
 
         return dt.strftime(
@@ -2150,8 +2131,24 @@ def convert_to_ist(value):
         return str(value)
 
 
-# Both names point to the same converter.
-# This keeps old templates working too.
+# ==================================================
+# JINJA DATETIME FILTERS
+# ==================================================
+
+@app.template_filter("ist_datetime")
+def ist_datetime(value):
+    return convert_to_ist(value)
+
+
+@app.template_filter("format_datetime")
+def format_datetime(value):
+    return convert_to_ist(value)
+
+
+# ==================================================
+# DATETIME TEST
+# ==================================================
+
 @app.route("/time-test")
 def time_test():
 
@@ -2163,62 +2160,16 @@ def time_test():
 
         <p>RAW: {{ value }}</p>
 
-        <p>FORMATTED: {{ value|display_datetime }}</p>
+        <p>IST:
+            {{ value|ist_datetime }}
+        </p>
+
+        <p>FORMAT:
+            {{ value|format_datetime }}
+        </p>
         """,
         value=test_time
     )
-@app.template_filter("format_datetime")
-def format_datetime(value):
-
-    if not value:
-        return ""
-
-    try:
-        value = str(value).strip()
-
-        # Handle SQLite UTC format
-        if "T" not in value and "+" not in value and "Z" not in value:
-            dt = datetime.strptime(
-                value,
-                "%Y-%m-%d %H:%M:%S"
-            )
-
-            dt = dt.replace(
-                tzinfo=timezone.utc
-            )
-
-        else:
-            # Handle ISO timestamp
-            dt = datetime.fromisoformat(
-                value.replace("Z", "+00:00")
-            )
-
-            if dt.tzinfo is None:
-                dt = dt.replace(
-                    tzinfo=timezone.utc
-                )
-
-        # Convert UTC to Indian Standard Time
-        from zoneinfo import ZoneInfo
-
-        ist = ZoneInfo("Asia/Kolkata")
-
-        dt = dt.astimezone(ist)
-
-        # Normal readable format
-        return dt.strftime(
-            "%d %b %Y, %I:%M %p"
-        )
-
-    except Exception as e:
-
-        print(
-            "DATETIME FORMAT ERROR:",
-            value,
-            e
-        )
-
-        return str(value)
 
 
     # ==================================================
