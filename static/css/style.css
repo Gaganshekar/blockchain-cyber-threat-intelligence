@@ -2260,3 +2260,41 @@ tbody tr:hover {
     font-weight: normal;
     opacity: 0.7;
 }
+/* ==================================================
+   TABLE VISIBILITY
+   ================================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: transparent;
+}
+
+table th {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+table td {
+    padding: 13px 12px;
+    color: #000000;
+    background: #e2e8f0;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+/* Same background for odd and even rows */
+table tbody tr:nth-child(odd) td,
+table tbody tr:nth-child(even) td {
+    background: #e2e8f0;
+    color: #000000;
+}
+
+/* Hover */
+table tbody tr:hover td {
+    background: #cbd5e1;
+    color: #000000;
+}
