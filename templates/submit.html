@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Submit Threat | CyberCTI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header>
+
+    <div class="logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        CyberCTI
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+        <a href="/checker">Threat Checker</a>
+        <a href="/submit">Submit Threat</a>
+        <a href="/reports">Reports</a>
+        <a href="/blockchain">Blockchain</a>
+        <a href="/about">About</a>
+
+    </nav>
+
+</header>
+
+<!-- ================= FORM ================= -->
+
+<div class="form-container">
+
+    <h2>
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        Submit Cyber Threat
+
+    </h2>
+
+    <form action="/submit" method="POST">
+
+        <div class="form-group">
+
+            <label>Threat Title</label>
+
+           <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Example: Fake Banking Login Page"
+                 minlength="8"
+                maxlength="100"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Threat Category</label>
+
+            <select name="category" required>
+
+                <option value="">Select Category</option>
+
+                <option>Phishing</option>
+
+                <option>Malware</option>
+
+                <option>Ransomware</option>
+
+                <option>Trojan</option>
+
+                <option>Spyware</option>
+
+                <option>Botnet</option>
+
+                <option>DDoS</option>
+
+                <option>Zero-Day</option>
+
+                <option>Data Breach</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Severity</label>
+
+            <select name="severity" required>
+
+                <option value="">Select Severity</option>
+
+                <option>Low</option>
+
+                <option>Medium</option>
+
+                <option>High</option>
+
+                <option>Critical</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Threat Indicator</label>
+
+            <input
+                 type="text"
+                id="indicator"
+                name="indicator"
+                placeholder="URL / Domain / IP / Email / Hash"
+                autocomplete="off"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Description</label>
+
+            <textarea
+                rows="6"
+                name="description"
+                placeholder="Describe the cyber threat..."
+                required></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Reported By</label>
+
+            <input
+                 type="text"
+                id="reporter"
+                name="reporter"
+                minlength="3"
+                 maxlength="40"
+                placeholder="Security Analyst"
+                required>
+
+        </div>
+
+        <button type="submit" class="submit-btn">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+            Submit Threat
+
+        </button>
+
+    </form>
+
+</div>
+
+<!-- ================= INFO ================= -->
+
+<section class="section">
+
+    <h2>Reporting Guidelines</h2>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            <h3>Accurate Details</h3>
+
+            <p>
+
+                Provide correct indicators like URLs, domains,
+                IP addresses or hashes.
+
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <h3>Immutable Records</h3>
+
+            <p>
+
+                Every submitted report is securely stored
+                in the blockchain ledger.
+
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <i class="fa-solid fa-users"></i>
+
+            <h3>Community Sharing</h3>
+
+            <p>
+
+                Help organizations by sharing verified
+                cyber threat intelligence.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <h3>Blockchain Cyber Threat Intelligence Platform</h3>
+
+    <p>
+
+        Share • Detect • Protect
+
+    </p>
+
+    <p>
+
+        © 2026 MCA Final Year Project
+
+    </p>
+
+</footer>
+<script>
+
+const invalidTitles = [
+
+"hi",
+
+"hello",
+
+"test",
+
+"abc",
+
+"xyz",
+
+"none",
+
+"nothing",
+
+"ok",
+
+"123",
+
+"threat"
+
+];
+
+document.querySelector("form").addEventListener("submit",function(e){
+
+let title=document.getElementById("title").value.trim().toLowerCase();
+
+let indicator=document.getElementById("indicator").value.trim();
+
+let reporter=document.getElementById("reporter").value.trim();
+
+if(invalidTitles.includes(title)){
+
+alert("Enter a valid cyber threat title.");
+
+e.preventDefault();
+
+return;
+
+}
+
+if(title.length<8){
+
+alert("Threat title is too short.");
+
+e.preventDefault();
+
+return;
+
+}
+
+if(reporter.length<3){
+
+alert("Reporter name is too short.");
+
+e.preventDefault();
+
+return;
+
+}
+
+const email=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const ip=/^(\d{1,3}\.){3}\d{1,3}$/;
+
+const domain=/^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+
+const url=/^(https?:\/\/)/i;
+
+const md5=/^[a-fA-F0-9]{32}$/;
+
+const sha1=/^[a-fA-F0-9]{40}$/;
+
+const sha256=/^[a-fA-F0-9]{64}$/;
+
+if(
+
+!email.test(indicator)
+
+&&
+
+!ip.test(indicator)
+
+&&
+
+!domain.test(indicator)
+
+&&
+
+!url.test(indicator)
+
+&&
+
+!md5.test(indicator)
+
+&&
+
+!sha1.test(indicator)
+
+&&
+
+!sha256.test(indicator)
+
+){
+
+alert(
+
+"Indicator must be a valid URL, Domain, IP, Email, MD5, SHA1 or SHA256."
+
+);
+
+e.preventDefault();
+
+return;
+
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

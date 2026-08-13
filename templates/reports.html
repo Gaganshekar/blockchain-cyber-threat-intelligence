@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Reports | CyberCTI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        CyberCTI
+
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/checker">Threat Checker</a>
+
+        <a href="/submit">Submit Threat</a>
+
+        <a href="/reports">Reports</a>
+
+        <a href="/blockchain">Blockchain</a>
+
+        <a href="/about">About</a>
+
+    </nav>
+
+</header>
+
+<div class="container">
+
+    <h1>
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        Cyber Threat Reports
+
+    </h1>
+
+    <br>
+
+    <div class="stats-row">
+
+        <div class="card">
+
+            <h2>{{ total }}</h2>
+
+            <p>Total Threats</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>{{ threats|length }}</h2>
+
+            <p>Displayed Results</p>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <form action="/search" method="POST">
+
+        <input
+
+            type="text"
+
+            name="keyword"
+
+            placeholder="Search by Title, Category or Indicator"
+
+            style="width:75%;padding:12px;">
+
+        <button class="submit-btn">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Search
+
+        </button>
+
+    </form>
+
+    <br>
+
+    <table class="report-table">
+
+        <thead>
+
+        <tr>
+
+            <th>No.</th>
+
+            <th>Threat</th>
+
+            <th>Category</th>
+
+            <th>Severity</th>
+
+            <th>Status</th>
+
+            <th>Risk</th>
+
+            <th>Confidence</th>
+
+            <th>Block</th>
+
+            <th>Reporter</th>
+
+            <th>Date</th>
+
+            <th>Action</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for row in threats %}
+
+        <tr>
+
+            <td>{{ loop.index }}</td>
+
+            <td>
+
+                <b>{{ row.title }}</b>
+
+                <br>
+
+                <small>{{ row.indicator }}</small>
+
+            </td>
+
+            <td>{{ row.category }}</td>
+
+            <td>{{ row.severity }}</td>
+
+            <td>
+
+                {% if row.status=="Safe" %}
+
+                <span class="result-safe">
+
+                    {{ row.status }}
+
+                </span>
+
+                {% elif row.status=="Suspicious" %}
+
+                <span class="result-warning">
+
+                    {{ row.status }}
+
+                </span>
+
+                {% elif row.status=="Malicious" %}
+
+                <span class="result-danger">
+
+                    {{ row.status }}
+
+                </span>
+
+                {% else %}
+
+                {{ row.status }}
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ row.risk_score }}/100</td>
+
+            <td>{{ row.confidence }}%</td>
+
+            <td>{{ row.block_index }}</td>
+
+            <td>{{ row.reporter }}</td>
+
+            <td>{{ row.created_at }}</td>
+
+            <td>
+                                <a href="/delete/{{ row.id }}"
+                   onclick="return confirm('Are you sure you want to delete this threat report?')"
+                   class="delete-btn">
+
+                    <i class="fa-solid fa-trash"></i>
+
+                    Delete
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% if threats|length == 0 %}
+
+    <div class="result-box">
+
+        <h3>No Threat Reports Found</h3>
+
+        <p>
+
+            No threats are available in the database.
+
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<footer>
+
+    <h3>
+
+        Blockchain Cyber Threat Intelligence Platform
+
+    </h3>
+
+    <p>
+
+        Secure • Detect • Share
+
+    </p>
+
+    <p>
+
+        © 2026 MCA Final Year Project
+
+    </p>
+
+</footer>
+
+</body>
+
+</html>

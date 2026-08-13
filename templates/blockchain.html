@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blockchain Ledger | CyberCTI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header>
+
+    <div class="logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        CyberCTI
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+        <a href="/checker">Threat Checker</a>
+        <a href="/reports">Reports</a>
+        <a href="/submit">Submit Threat</a>
+        <a href="/blockchain">Blockchain</a>
+        <a href="/about">About</a>
+
+    </nav>
+
+</header>
+
+<!-- ================= PAGE TITLE ================= -->
+
+<section class="section" style="margin-top:90px;">
+    <div class="cards">
+
+    <div class="card">
+
+        <i class="fa-solid fa-cube"></i>
+
+        <h3>Total Blocks</h3>
+
+        <h2>{{ blockchain|length - 1 }}</h2>
+
+    </div>
+
+    <div class="card">
+
+        <i class="fa-solid fa-link"></i>
+
+        <h3>Difficulty</h3>
+
+        <h2>4</h2>
+
+    </div>
+
+    <div class="card">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <h3>Status</h3>
+
+        {% if valid %}
+            <h2 style="color:#00ff88;">VALID</h2>
+        {% else %}
+            <h2 style="color:red;">INVALID</h2>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<br><br>
+
+    <h2>
+        <i class="fa-solid fa-link"></i>
+        Blockchain Ledger
+    </h2>
+
+    <p class="text-center mt-20">
+
+        Every submitted cyber threat is securely stored as a blockchain block.
+        Each block contains the threat information, timestamp, previous hash,
+        and its own SHA-256 hash.
+
+    </p>
+
+</section>
+
+<!-- ================= BLOCKCHAIN TABLE ================= -->
+
+<section class="section">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Block</th>
+
+<th>Timestamp</th>
+
+<th>Threat</th>
+
+<th>Category</th>
+
+<th>Severity</th>
+
+<th>Nonce</th>
+
+<th>Previous Hash</th>
+
+<th>Current Hash</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% if blockchain|length <= 1 %}
+
+<tr>
+    <td colspan="8" style="text-align:center;padding:20px;">
+        No threat records found.
+    </td>
+</tr>
+
+{% else %}
+
+{% for block in blockchain %}
+{% if block.index != 0 %}
+
+<tr>
+
+<td>{{ block.index }}</td>
+
+<td>{{ block.timestamp }}</td>
+
+<td>{{ block.data.title }}</td>
+
+<td>{{ block.data.category }}</td>
+
+<td>{{ block.data.severity }}</td>
+
+<td>{{ block.nonce }}</td>
+
+<td style="font-size:11px;word-break:break-all;">
+{{ block.previous_hash }}
+</td>
+
+<td style="font-size:11px;word-break:break-all;">
+{{ block.hash }}
+</td>
+
+</tr>
+
+{% endif %}
+{% endfor %}
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+
+<br>
+
+{% if blockchain|length > 1 %}
+
+<h2>
+
+Blockchain Explorer
+
+</h2>
+
+{% for block in blockchain %}
+{% if block.index != 0 %}
+
+<div class="card">
+
+<h3>Block #{{ block.index }}</h3>
+
+<p><b>Timestamp:</b> {{ block.timestamp }}</p>
+
+<p><b>Nonce:</b> {{ block.nonce }}</p>
+
+<p><b>Threat:</b> {{ block.data.title }}</p>
+
+<p><b>Indicator:</b> {{ block.data.indicator }}</p>
+
+<p><b>Severity:</b> {{ block.data.severity }}</p>
+
+<p><b>Reporter:</b> {{ block.data.reporter }}</p>
+
+</div>
+
+<br>
+
+{% endif %}
+{% endfor %}
+
+{% else %}
+
+<h2 style="text-align:center;color:#00bcd4;">
+No Blocks Available
+</h2>
+
+<p style="text-align:center;">
+Submit a threat report to create a blockchain block.
+</p>
+
+{% endif %}
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section class="section">
+
+<h2>Blockchain Security</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-lock"></i>
+
+<h3>SHA-256 Hashing</h3>
+
+<p>
+
+Every block generates a unique SHA-256 hash to ensure
+data integrity.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h3>Immutable Records</h3>
+
+<p>
+
+Once a cyber threat is stored, it cannot be modified
+without changing every subsequent block.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+<h3>Timestamp Verification</h3>
+
+<p>
+
+Each reported cyber threat contains the exact
+submission time for verification.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-network-wired"></i>
+
+<h3>Trusted Sharing</h3>
+
+<p>
+
+Threat intelligence can be securely shared among
+organizations while maintaining authenticity.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= CHAIN STATUS ================= -->
+
+<section class="section text-center">
+
+<h2>Blockchain Status</h2>
+
+<br>
+
+{% if valid %}
+
+<h2 style="color:#00ff88;">
+
+<i class="fa-solid fa-circle-check"></i>
+
+Blockchain Integrity Verified
+
+</h2>
+
+{% else %}
+
+<h2 style="color:red;">
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+Blockchain Tampered
+
+</h2>
+
+{% endif %}
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<h3>Blockchain Cyber Threat Intelligence Platform</h3>
+
+<p>
+
+Python • Flask • SQLite • Blockchain
+
+</p>
+
+<p>
+
+© 2026 MCA Final Year Project
+
+</p>
+
+</footer>
+
+</body>
+
+</html>

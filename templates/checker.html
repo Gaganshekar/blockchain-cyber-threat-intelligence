@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Checker | CyberCTI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header>
+
+        <div class="logo">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            CyberCTI
+
+        </div>
+
+        <nav>
+
+            <a href="/">Home</a>
+
+            <a href="/checker">Threat Checker</a>
+
+            <a href="/submit">Submit Threat</a>
+
+            <a href="/reports">Reports</a>
+
+            <a href="/blockchain">Blockchain</a>
+
+            <a href="/about">About</a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ================= CHECKER FORM ================= -->
+
+    <div class="form-container">
+
+        <h2>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Cyber Threat Checker
+
+        </h2>
+
+
+        <form action="/check" method="POST" autocomplete="off">
+
+            <div class="form-group">
+
+                <label for="indicator_type">
+                    Select Indicator Type
+                </label>
+
+                <select name="type"
+                        id="indicator_type"
+                        required>
+
+                    <option value="">Choose</option>
+
+                    <option value="url"
+                        {% if result and result.get('indicator_type') == 'url' %}
+                            selected
+                        {% endif %}>
+                        URL
+                    </option>
+
+                    <option value="domain"
+                        {% if result and result.get('indicator_type') == 'domain' %}
+                            selected
+                        {% endif %}>
+                        Domain
+                    </option>
+
+                    <option value="ip"
+                        {% if result and result.get('indicator_type') == 'ip' %}
+                            selected
+                        {% endif %}>
+                        IP Address
+                    </option>
+
+                    <option value="email"
+                        {% if result and result.get('indicator_type') == 'email' %}
+                            selected
+                        {% endif %}>
+                        Email Address
+                    </option>
+
+                    <option value="hash"
+                        {% if result and result.get('indicator_type') == 'hash' %}
+                            selected
+                        {% endif %}>
+                        MD5 / SHA1 / SHA256 Hash
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="indicator_value">
+                    Enter Value
+                </label>
+
+                <input
+                    type="text"
+                    id="indicator_value"
+                    name="value"
+                    value="{{ result.get('indicator', '') if result else '' }}"
+                    placeholder="Example: example.com"
+                    required
+                    autocomplete="off">
+
+            </div>
+
+
+            <button type="submit" class="submit-btn">
+
+                <i class="fa-solid fa-shield-virus"></i>
+
+                Check Threat
+
+            </button>
+
+        </form>
+
+
+        <!-- ================= THREAT ANALYSIS RESULT ================= -->
+
+        {% if result %}
+
+        <div class="result-box">
+
+            <h2>
+
+                <i class="fa-solid fa-shield-virus"></i>
+
+                Threat Analysis Result
+
+            </h2>
+
+            <hr>
+
+
+            <!-- INDICATOR -->
+
+            <p>
+
+                <strong>Indicator:</strong>
+
+                <span>
+                    {{ result.get('indicator', 'Not available') }}
+                </span>
+
+            </p>
+
+
+            <!-- INDICATOR TYPE -->
+
+            <p>
+
+                <strong>Type:</strong>
+
+                <span>
+                    {{ result.get('indicator_type', result.get('type', 'Not available')) | upper }}
+                </span>
+
+            </p>
+
+
+            <!-- STATUS -->
+
+            <p>
+
+                <strong>Status:</strong>
+
+                {% set status = result.get('status', 'Unknown') %}
+
+                {% if status|lower == 'safe' %}
+
+                    <span class="result-safe">
+                        {{ status }}
+                    </span>
+
+                {% elif status|lower == 'suspicious' %}
+
+                    <span class="result-warning">
+                        {{ status }}
+                    </span>
+
+                {% elif status|lower in ['malicious', 'critical'] %}
+
+                    <span class="result-danger">
+                        {{ status }}
+                    </span>
+
+                {% elif status|lower == 'high' %}
+
+                    <span class="result-danger">
+                        {{ status }}
+                    </span>
+
+                {% else %}
+
+                    <span style="color:#ff9800;font-weight:bold;">
+                        {{ status }}
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+
+            <!-- THREAT TYPE -->
+
+            <p>
+
+                <strong>Threat Type:</strong>
+
+                <span>
+                    {{ result.get('threat_type',
+                       result.get('threat', 'General Threat')) }}
+                </span>
+
+            </p>
+
+
+            <!-- THREAT SCORE -->
+
+            <p>
+
+                <strong>Threat Score:</strong>
+
+                <span>
+                    {{ result.get('score', 0) }}/100
+                </span>
+
+            </p>
+
+
+            <!-- RISK LEVEL -->
+
+            <p>
+
+                <strong>Risk Level:</strong>
+
+                {% set score = result.get('score', 0) | int %}
+
+                {% if score >= 90 %}
+
+                    <span class="result-danger">
+                        Critical
+                    </span>
+
+                {% elif score >= 70 %}
+
+                    <span class="result-danger">
+                        High
+                    </span>
+
+                {% elif score >= 40 %}
+
+                    <span class="result-warning">
+                        Medium
+                    </span>
+
+                {% else %}
+
+                    <span class="result-safe">
+                        Low
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+
+            <!-- SCORE PROGRESS -->
+
+            <progress
+                value="{{ score }}"
+                max="100"
+                style="width:100%;height:20px;">
+            </progress>
+
+
+            <br><br>
+
+
+            <!-- CONFIDENCE -->
+
+            <p>
+
+                <strong>Confidence:</strong>
+
+                <span>
+                    {{ result.get('confidence', 0) }}%
+                </span>
+
+            </p>
+
+
+            <!-- CONFIDENCE PROGRESS -->
+
+            <progress
+                value="{{ result.get('confidence', 0) }}"
+                max="100"
+                style="width:100%;height:20px;">
+            </progress>
+
+
+            <br><br>
+
+
+            <!-- ================= REASON ================= -->
+
+            {% if result.get('reason') %}
+
+                <h3>
+                    Detection Reason
+                </h3>
+
+                <div class="recommend-box">
+
+                    {{ result.get('reason') }}
+
+                </div>
+
+            {% elif result.get('reasons') %}
+
+                <h3>
+                    Detection Reasons
+                </h3>
+
+                <ul>
+
+                    {% for reason in result.get('reasons') %}
+
+                        <li>
+                            {{ reason }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <h3>
+                    Detection Reason
+                </h3>
+
+                <div class="recommend-box">
+
+                    No specific detection reason was returned.
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ================= RECOMMENDATION ================= -->
+
+            <h3>
+
+                Recommendation
+
+            </h3>
+
+
+            <div class="recommend-box">
+
+                {{ result.get(
+                    'recommendation',
+                    'No recommendation available.'
+                ) }}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================= INFORMATION ================= -->
+
+    <section class="section">
+
+        <h2>
+            Supported Threat Checks
+        </h2>
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-link"></i>
+
+                <h3>
+                    URL Scan
+                </h3>
+
+                <p>
+                    Detect phishing websites and malicious URLs.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-globe"></i>
+
+                <h3>
+                    Domain Reputation
+                </h3>
+
+                <p>
+                    Check if a domain has been reported as malicious.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-network-wired"></i>
+
+                <h3>
+                    IP Reputation
+                </h3>
+
+                <p>
+                    Identify suspicious IP addresses.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-file-shield"></i>
+
+                <h3>
+                    Hash Verification
+                </h3>
+
+                <p>
+                    Verify MD5, SHA1 or SHA256 malware hashes.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <h3>
+            Blockchain Cyber Threat Intelligence Platform
+        </h3>
+
+        <p>
+            Secure • Detect • Share
+        </p>
+
+        <p>
+            © 2026 MCA Final Year Project
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

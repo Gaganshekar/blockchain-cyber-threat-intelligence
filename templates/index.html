@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Cyber Threat Intelligence</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header>
+
+    <div class="logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>CyberCTI</span>
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/checker">Threat Checker</a>
+
+        <a href="/submit">Submit Threat</a>
+
+        <a href="/reports">Reports</a>
+
+        <a href="/blockchain">Blockchain</a>
+
+        <a href="/about">About</a>  
+
+    </nav>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Blockchain Cyber Threat Intelligence Platform</h1>
+
+        <p>
+
+            Share cyber threats securely using Blockchain technology.
+
+            Detect phishing, ransomware, malware, botnets and malicious domains
+            through a simple Cyber Threat Intelligence platform.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/checker" class="btn">
+                Check Threat
+            </a>
+
+            <a href="/submit" class="btn2">
+                Submit Threat
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= THREATS ================= -->
+
+<section class="section">
+
+<h2>Latest Cyber Threats</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-virus"></i>
+
+<h3>Ransomware</h3>
+
+<p>
+
+Encrypts files and demands payment.
+
+</p>
+
+<span class="danger">HIGH RISK</span>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-fish"></i>
+
+<h3>Phishing</h3>
+
+<p>
+
+Fake websites steal login credentials.
+
+</p>
+
+<span class="warning">MEDIUM</span>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-bug"></i>
+
+<h3>Malware</h3>
+
+<p>
+
+Software designed to damage computers.
+
+</p>
+
+<span class="danger">HIGH</span>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-network-wired"></i>
+
+<h3>Botnet</h3>
+
+<p>
+
+Network of infected computers.
+
+</p>
+
+<span class="warning">MEDIUM</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="section">
+
+<h2>Threat Categories</h2>
+
+<div class="categories">
+
+<div>🛡 Malware</div>
+
+<div>🎣 Phishing</div>
+
+<div>💣 Ransomware</div>
+
+<div>🌐 Botnet</div>
+
+<div>⚠ Zero-Day</div>
+
+<div>📡 DDoS</div>
+
+</div>
+
+</section>
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+<div class="stat-box">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<h2 id="totalThreats">0</h2>
+
+<p>Total Threats</p>
+
+</div>
+
+<div class="stat-box">
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+<h2 id="criticalThreats">0</h2>
+
+<p>Critical</p>
+
+</div>
+
+<div class="stat-box">
+
+<i class="fa-solid fa-link"></i>
+
+<h2 id="blocks">0</h2>
+
+<p>Blockchain Blocks</p>
+
+</div>
+
+<div class="stat-box">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h2 id="status">Valid</h2>
+
+<p>Blockchain Status</p>
+
+</div>
+
+</section>
+
+<!-- ================= LIVE DASHBOARD ================= -->
+
+<section class="section">
+
+<h2>
+
+<i class="fa-solid fa-chart-line"></i>
+
+Live Dashboard
+
+</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>System Status</h3>
+
+<p id="systemStatus">Loading...</p>
+
+</div>
+
+<div class="card">
+
+<h3>Blockchain Integrity</h3>
+
+<p id="chainStatus">Checking...</p>
+
+</div>
+
+<div class="card">
+
+<h3>Latest Block</h3>
+
+<p id="latestBlock">Loading...</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-heart-pulse"></i>
+
+<h3>System Health</h3>
+
+<p id="health">
+
+Checking...
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-database"></i>
+
+<h3>Database</h3>
+
+<p>
+
+SQLite Connected
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-cube"></i>
+
+<h3>Mining Status</h3>
+
+<p>
+
+Proof of Work Enabled
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= THREAT STATISTICS ================= -->
+
+<section class="section">
+
+<h2>
+
+Threat Statistics
+
+</h2>
+
+<canvas id="severityChart"
+        width="600"
+        height="250">
+</canvas>
+
+</section>
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ================= RECENT THREATS ================= -->
+
+<section class="section">
+
+<h2>
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+Latest Threat Reports
+
+</h2>
+
+<table>
+
+<thead>
+
+<thead>
+
+<tr>
+
+<th>No.</th>
+
+<th>Threat</th>
+
+<th>Category</th>
+
+<th>Severity</th>
+
+<th>Reporter</th>
+
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for row in threats %}
+
+<tr>
+
+<td>
+    {{ loop.index }}
+</td>
+
+<td>
+    {{ row.title }}
+</td>
+
+<td>
+    {{ row.category }}
+</td>
+
+<td>
+    {{ row.severity }}
+</td>
+
+<td>
+    {{ row.reporter }}
+</td>
+
+<td>
+    {{ row.created_at }}
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- ================= WHY BLOCKCHAIN ================= -->
+
+<section class="section">
+
+<h2>Why Blockchain?</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-lock"></i>
+
+<h3>Secure</h3>
+
+<p>
+
+Every threat report is protected with SHA-256 hashing.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-link"></i>
+
+<h3>Immutable</h3>
+
+<p>
+
+Once stored, threat intelligence cannot be modified.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-share-nodes"></i>
+
+<h3>Sharing</h3>
+
+<p>
+
+Organizations can securely exchange cyber threat data.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<h3>Blockchain Cyber Threat Intelligence Platform</h3>
+
+<p>
+
+Built using Python • Flask • SQLite • Blockchain
+
+</p>
+
+<p>
+
+© 2026 MCA Final Year Project
+
+</p>
+
+</footer>
+
+<script>
+
+async function loadStats(){
+
+const response=await fetch("/stats");
+
+const data=await response.json();
+
+document.getElementById("totalThreats").innerHTML=data.total_reports;
+
+document.getElementById("criticalThreats").innerHTML=data.critical;
+
+document.getElementById("blocks").innerHTML=data.blockchain_blocks;
+
+document.getElementById("status").innerHTML="Valid";
+
+document.getElementById("systemStatus").innerHTML="Running";
+
+document.getElementById("chainStatus").innerHTML="Verified";
+
+document.getElementById("latestBlock").innerHTML=data.blockchain_blocks;
+
+document.getElementById("health").innerHTML="Healthy";
+
+new Chart(
+
+document.getElementById("severityChart"),
+
+{
+
+type:"bar",
+
+data:{
+
+labels:["Critical","High","Medium","Low"],
+
+datasets:[{
+
+label:"Threat Count",
+
+data:[
+
+data.critical,
+
+data.high,
+
+data.medium,
+
+data.low
+
+]
+
+}]
+
+}
+
+}
+
+);
+
+}
+
+loadStats();
+
+</script>
+
+</body>
+</html>

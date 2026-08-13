@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Submitted Successfully</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="success-page">
+
+<div class="success-wrapper">
+
+    <!-- Success Banner -->
+
+    <div class="success-banner">
+
+        <div class="success-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <h1>Threat Submitted Successfully</h1>
+
+        <p>
+            Your cyber threat intelligence report has been verified,
+            analysed and permanently stored on the blockchain.
+        </p>
+
+    </div>
+
+
+    <!-- Information -->
+
+    <div class="dashboard-grid">
+
+        <!-- Left Card -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <h2>
+                    <i class="fa-solid fa-shield-virus"></i>
+                    Threat Information
+                </h2>
+
+                <div class="score-circle">
+
+                    <span>{{ threat.score }}/100</span>
+
+                    <small>Score</small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div>
+
+                    <label>Threat Title</label>
+
+                    <p>{{ threat.title }}</p>
+
+                </div>
+
+
+                <div>
+
+                    <label>Category</label>
+
+                    <p>{{ threat.category }}</p>
+
+                </div>
+
+
+                <div>
+
+                    <label>Severity</label>
+
+                    <span class="badge badge-red">
+
+                        {{ threat.severity }}
+
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label>Reporter</label>
+
+                    <p>{{ threat.reporter }}</p>
+
+                </div>
+
+
+                <div class="full-width">
+
+                    <label>Indicator</label>
+
+                    <p class="indicator">
+
+                        {{ threat.indicator }}
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <label>Status</label>
+
+                    <span class="badge badge-green">
+
+                        {{ threat.status }}
+
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label>Confidence</label>
+
+                    <p>{{ threat.confidence }}%</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="dashboard-card">
+
+            <h2>
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                Description
+
+            </h2>
+
+            <p class="description">
+
+                {{ threat.description }}
+
+            </p>
+
+        </div>
+
+
+        <!-- Blockchain -->
+
+        <div class="dashboard-card">
+
+            <h2>
+
+                <i class="fa-solid fa-link"></i>
+
+                Blockchain Verification
+
+            </h2>
+
+            <div class="block-grid">
+
+                <div>
+
+                    <label>Block Number</label>
+
+                    <p>#{{ block.index }}</p>
+
+                </div>
+
+                <div>
+
+                    <label>Timestamp</label>
+
+                    <p>{{ block.timestamp }}</p>
+
+                </div>
+
+            </div>
+
+            <label class="hash-label">
+
+                Block Hash
+
+            </label>
+
+            <div class="hash-box">
+
+                {{ block.hash }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Buttons -->
+
+    <div class="action-buttons">
+
+        <a href="/submit" class="btn-primary">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Submit Another
+
+        </a>
+
+        <a href="/reports" class="btn-secondary">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Threat Reports
+
+        </a>
+
+        <a href="/blockchain" class="btn-secondary">
+
+            <i class="fa-solid fa-cubes"></i>
+
+            Blockchain
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
