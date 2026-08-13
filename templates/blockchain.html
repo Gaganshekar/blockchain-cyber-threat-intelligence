@@ -61,7 +61,7 @@
 
         <h3>Difficulty</h3>
 
-        <h2>4</h2>
+        <h2>{{ difficulty }}</h2>
 
     </div>
 
@@ -147,7 +147,7 @@
 
 <td>{{ block.index }}</td>
 
-<td>{{ block.timestamp }}</td>
+<td>{{ block.timestamp|ist_datetime }}</td>
 
 <td>{{ block.data.title }}</td>
 
@@ -194,7 +194,7 @@ Blockchain Explorer
 
 <h3>Block #{{ block.index }}</h3>
 
-<p><b>Timestamp:</b> {{ block.timestamp }}</p>
+<p><b>Timestamp:</b> {{ block.timestamp|ist_datetime }}</p>
 
 <p><b>Nonce:</b> {{ block.nonce }}</p>
 

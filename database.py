@@ -460,7 +460,8 @@ def save_threat_and_block(
             "status": status,
             "risk_score": risk_score,
             "confidence": confidence,
-            "block_index": block.index
+            "block_index": block.index,
+            "created_at": block.timestamp
         }
 
         block_payload = {
@@ -504,33 +505,35 @@ def save_threat_and_block(
     try:
 
         cursor.execute("""
-        INSERT INTO threats
-        (
-            title,
-            category,
-            severity,
-            indicator,
-            description,
-            reporter,
-            status,
-            risk_score,
-            confidence,
-            block_index
-        )
-        VALUES (?,?,?,?,?,?,?,?,?,?)
-        """,
-        (
-            title,
-            category,
-            severity,
-            indicator,
-            description,
-            reporter,
-            status,
-            risk_score,
-            confidence,
-            block.index
-        ))
+            INSERT INTO threats
+            (
+                title,
+                category,
+                severity,
+                indicator,
+                description,
+                reporter,
+                status,
+                risk_score,
+                confidence,
+                block_index,
+                created_at
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+            """,
+            (
+                title,
+                category,
+                severity,
+                indicator,
+                description,
+                reporter,
+                status,
+                risk_score,
+                confidence,
+                block.index,
+                block.timestamp
+            ))
 
         cursor.execute("""
         INSERT OR IGNORE INTO blockchain

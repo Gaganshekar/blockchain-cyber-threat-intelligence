@@ -11,6 +11,7 @@ from flask import (
     Flask,
     json,
     render_template,
+    render_template_string,
     request,
     redirect,
     jsonify,
@@ -20,6 +21,13 @@ from flask import (
 import database
 from blockchain import Blockchain
 from threat_checker import ThreatChecker
+from flask import render_template_string
+from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
+
+IST = ZoneInfo("Asia/Kolkata")
+
+import blockchain
 
 
 # ==================================================
@@ -324,12 +332,6 @@ def render_submit_form(data):
         description=data.get("description", ""),
         reporter=data.get("reporter", "")
     )
-
-
-# ==================================================
-# REBUILD BLOCKCHAIN FROM DATABASE
-# ==================================================
-
 def rebuild_blockchain():
 
     global blockchain
@@ -337,34 +339,17 @@ def rebuild_blockchain():
     blockchain = Blockchain()
 
     try:
-
         threats = database.get_all_threats()
-
-    except Exception as error:
-
-        print(
-            "BLOCKCHAIN REBUILD ERROR:",
-            error
-        )
-
+    except Exception:
         return
 
     try:
-
         database.clear_blockchain_table()
-
-    except Exception as error:
-
-        print(
-            "BLOCKCHAIN CLEAR ERROR:",
-            error
-        )
-
+    except Exception:
         return
 
     seen = set()
 
-    # Oldest first
     for threat in threats:
 
         key = (
@@ -388,8 +373,11 @@ def rebuild_blockchain():
 
         try:
 
+            timestamp = threat.get("created_at")
+
             block = blockchain.add_block(
-                block_data
+                block_data,
+                timestamp=timestamp
             )
 
             database.save_block(
@@ -406,25 +394,50 @@ def rebuild_blockchain():
                 block.index
             )
 
-        except Exception as error:
+        except Exception:
+            continue
+    # --------------------------------------------------
+    # Get threats from database
+    # --------------------------------------------------
 
-            print(
-                "BLOCKCHAIN REBUILD BLOCK ERROR:",
-                error
-            )
+    try:
 
-# ==================================================
-# HOME PAGE
-# ==================================================
+        threats = database.get_all_threats()
 
-@app.route("/")
-def home():
+        print(
+            "THREATS FOUND:",
+            len(threats)
+        )
 
-    threats = database.get_all_threats()
+    except Exception as error:
 
-    total = len(threats)
+        print(
+            "BLOCKCHAIN REBUILD DATABASE ERROR:",
+            error
+        )
 
-    latest = []
+        return
+
+    # --------------------------------------------------
+    # Clear stored blockchain
+    # --------------------------------------------------
+
+    try:
+
+        database.clear_blockchain_table()
+
+    except Exception as error:
+
+        print(
+            "BLOCKCHAIN CLEAR ERROR:",
+            error
+        )
+
+        return
+
+    # --------------------------------------------------
+    # Rebuild blocks
+    # --------------------------------------------------
 
     seen = set()
 
@@ -436,33 +449,117 @@ def home():
         )
 
         if key in seen:
+
             continue
 
-        latest.append(threat)
-
         seen.add(key)
-        print("HOME TOTAL:", total)
-        print("HOME DISPLAY:", len(latest))
 
-        for item in latest:
-            print(
-                "HOME THREAT:",
-                item.get("id"),
-                item.get("title"),
-                item.get("indicator")
+        block_data = {
+
+            "title":
+                threat["title"],
+
+            "category":
+                threat["category"],
+
+            "severity":
+                threat["severity"],
+
+            "indicator":
+                threat["indicator"],
+
+            "description":
+                threat["description"],
+
+            "reporter":
+                threat["reporter"]
+        }
+
+        try:
+
+            # --------------------------------------------------
+            # Preserve original database timestamp
+            # --------------------------------------------------
+
+            timestamp = threat.get(
+                "created_at"
             )
+
+
+            block = blockchain.add_block(
+
+                block_data,
+
+                timestamp=timestamp
+            )
+
+            database.save_block(
+
+                block.index,
+
+                block.previous_hash,
+
+                block.hash,
+
+                block.nonce,
+
+                block.timestamp,
+
+                block.data
+            )
+
+            database.update_block_index(
+
+                threat["id"],
+
+                block.index
+            )
+
+        except Exception as error:
+
+            print(
+                "BLOCKCHAIN REBUILD BLOCK ERROR:",
+                repr(error)
+            )
+
+    print()
+    print("=" * 70)
+    print(
+        "BLOCKCHAIN REBUILD COMPLETE"
+    )
+    print(
+        "TOTAL BLOCKS:",
+        len(blockchain.chain)
+    )
+    print(
+        "VALID:",
+        blockchain.is_chain_valid()
+    )
+    print("=" * 70)
+    print()
+# ==================================================
+# HOME PAGE
+# ==================================================
+
+@app.route("/")
+def home():
+
+    threats = database.get_all_threats()
+
+    # Show only latest 10 threats on home page
+    recent_threats = threats[:10]
+
+    total = len(threats)
 
     return render_template(
         "index.html",
-        threats=latest,
+        threats=recent_threats,
         total=total,
         blockchain_blocks=len(
-            blockchain.chain
+            database.get_all_blocks()
         ),
         blockchain_valid=blockchain.is_chain_valid()
     )
-
-
 # ==================================================
 # ABOUT PAGE
 # ==================================================
@@ -1054,7 +1151,6 @@ def reports():
     threats = database.get_all_threats()
 
     unique = []
-
     seen = set()
 
     for threat in threats:
@@ -1067,8 +1163,8 @@ def reports():
         if key in seen:
             continue
 
-        unique.append(threat)
 
+        unique.append(threat)
         seen.add(key)
 
     total = len(unique)
@@ -1134,7 +1230,6 @@ def reports():
 
         malicious=malicious
     )
-
 
 # ==================================================
 # SEARCH
@@ -1446,89 +1541,117 @@ def api_threats():
 @app.route("/stats")
 def stats():
 
-    threats = database.get_all_threats()
+    try:
 
-    result = {
+        threats = database.get_all_threats()
+        blocks = database.get_all_blocks()
 
-        "total_reports":
-            len(threats),
+        # ==================================================
+        # REMOVE DUPLICATE THREATS
+        # ==================================================
 
-        "critical":
-            0,
+        unique_threats = []
+        seen = set()
 
-        "high":
-            0,
+        for row in threats:
 
-        "medium":
-            0,
+            title = str(
+                row["title"] or ""
+            ).strip().lower()
 
-        "low":
-            0,
+            indicator = str(
+                row["indicator"] or ""
+            ).strip().lower()
 
-        "safe":
-            0,
+            key = (
+                title,
+                indicator
+            )
 
-        "suspicious":
-            0,
+            if key in seen:
+                continue
 
-        "malicious":
-            0,
+            seen.add(key)
+            unique_threats.append(row)
 
-        "phishing":
-            0,
+        # ==================================================
+        # STATISTICS
+        # ==================================================
 
-        "malware":
-            0,
+        result = {
 
-        "ransomware":
-            0,
+            "total_reports":
+                len(unique_threats),
 
-        "trojan":
-            0,
+            "critical": 0,
+            "high": 0,
+            "medium": 0,
+            "low": 0,
 
-        "spyware":
-            0,
+            "safe": 0,
+            "suspicious": 0,
+            "malicious": 0,
 
-        "ddos":
-            0,
+            "phishing": 0,
+            "malware": 0,
+            "ransomware": 0,
+            "trojan": 0,
+            "spyware": 0,
+            "ddos": 0,
+            "botnet": 0,
 
-        "botnet":
-            0,
+            "blockchain_blocks":
+                len(blocks),
 
-        "blockchain_blocks":
-            len(blockchain.chain),
+            "blockchain_valid":
+                blockchain.is_chain_valid()
+        }
 
-        "blockchain_valid":
-            blockchain.is_chain_valid()
+        # ==================================================
+        # COUNT UNIQUE THREATS
+        # ==================================================
 
-    }
+        for row in unique_threats:
 
-    for row in threats:
+            severity = str(
+                row["severity"] or ""
+            ).strip().lower()
 
-        severity = str(
-            row["severity"] or ""
-        ).lower()
+            category = str(
+                row["category"] or ""
+            ).strip().lower()
 
-        category = str(
-            row["category"] or ""
-        ).lower()
+            status = str(
+                row["status"] or ""
+            ).strip().lower()
 
-        status = str(
-            row["status"] or ""
-        ).lower()
+            if severity in result:
+                result[severity] += 1
 
-        if severity in result:
-            result[severity] += 1
+            if category in result:
+                result[category] += 1
 
-        if category in result:
-            result[category] += 1
+            if status in result:
+                result[status] += 1
 
-        if status in result:
-            result[status] += 1
+        return jsonify(result)
 
-    return jsonify(result)
+    except Exception as error:
 
+        print(
+            "STATS ERROR:",
+            error
+        )
 
+        return jsonify({
+
+            "error":
+                "Unable to retrieve statistics",
+
+            "message":
+                str(error)
+
+        }), 500
 # ==================================================
 # HEALTH API
 # ==================================================
@@ -1949,16 +2072,158 @@ def open_browser():
             "BROWSER OPEN ERROR:",
             error
         )
-
+# ==================================================
+# DATETIME FORMATTER
+# ==================================================
 
 # ==================================================
+# DATETIME FORMATTER - UTC TO IST
+# ==================================================
+
+from zoneinfo import ZoneInfo
+
+IST = ZoneInfo("Asia/Kolkata")
+
+
+def convert_to_ist(value):
+
+    if not value:
+        return ""
+
+    try:
+
+        value = str(value).strip()
+
+        # ------------------------------------------
+        # ISO format
+        # Example:
+        # 2026-08-03T09:21:40+00:00
+        # ------------------------------------------
+
+        if "T" in value:
+
+            dt = datetime.fromisoformat(
+                value.replace("Z", "+00:00")
+            )
+
+        # ------------------------------------------
+        # SQLite CURRENT_TIMESTAMP
+        # Example:
+        # 2026-08-03 09:21:40
+        # ------------------------------------------
+
+        else:
+
+            dt = datetime.strptime(
+                value,
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+        # ------------------------------------------
+        # Database timestamps are UTC
+        # ------------------------------------------
+
+        if dt.tzinfo is None:
+
+            dt = dt.replace(
+                tzinfo=timezone.utc
+            )
+
+        # ------------------------------------------
+        # UTC -> IST
+        # ------------------------------------------
+
+        dt = dt.astimezone(IST)
+
+        return dt.strftime(
+            "%d %b %Y, %I:%M %p"
+        )
+
+    except Exception as error:
+
+        print(
+            "DATETIME FORMAT ERROR:",
+            value,
+            error
+        )
+
+        return str(value)
+
+
+# Both names point to the same converter.
+# This keeps old templates working too.
+@app.route("/time-test")
+def time_test():
+
+    test_time = "2026-08-03T09:21:40+00:00"
+
+    return render_template_string(
+        """
+        <h1>Datetime Test</h1>
+
+        <p>RAW: {{ value }}</p>
+
+        <p>FORMATTED: {{ value|display_datetime }}</p>
+        """,
+        value=test_time
+    )
+@app.template_filter("format_datetime")
+def format_datetime(value):
+
+    if not value:
+        return ""
+
+    try:
+        value = str(value).strip()
+
+        # Handle SQLite UTC format
+        if "T" not in value and "+" not in value and "Z" not in value:
+            dt = datetime.strptime(
+                value,
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+            dt = dt.replace(
+                tzinfo=timezone.utc
+            )
+
+        else:
+            # Handle ISO timestamp
+            dt = datetime.fromisoformat(
+                value.replace("Z", "+00:00")
+            )
+
+            if dt.tzinfo is None:
+                dt = dt.replace(
+                    tzinfo=timezone.utc
+                )
+
+        # Convert UTC to Indian Standard Time
+        from zoneinfo import ZoneInfo
+
+        ist = ZoneInfo("Asia/Kolkata")
+
+        dt = dt.astimezone(ist)
+
+        # Normal readable format
+        return dt.strftime(
+            "%d %b %Y, %I:%M %p"
+        )
+
+    except Exception as e:
+
+        print(
+            "DATETIME FORMAT ERROR:",
+            value,
+            e
+        )
+
+        return str(value)
+
+
+    # ==================================================
 # APPLICATION START
 # ==================================================
-
-# Rebuild blockchain from saved database data
-# This runs when Flask is imported by Gunicorn on Render.
-rebuild_blockchain()
-
 
 if __name__ == "__main__":
 

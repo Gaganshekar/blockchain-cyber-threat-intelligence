@@ -181,7 +181,7 @@ Network of infected computers.
 
 <i class="fa-solid fa-triangle-exclamation"></i>
 
-<h2 id="totalThreats">0</h2>
+<h2 id="totalThreats">Loading...</h2>
 
 <p>Total Threats</p>
 
@@ -342,7 +342,7 @@ Threat Statistics
     <h2>
         <i class="fa-solid fa-clock-rotate-left"></i>
         Latest Threat Reports
-        <span class="threat-count">({{ threats|length }})</span>
+        <span class="threat-count" id="latestThreatCount">(0)</span>
     </h2>
 
     <div class="table-container">
@@ -372,7 +372,7 @@ Threat Statistics
                         <td>{{ row.category }}</td>
                         <td>{{ row.severity }}</td>
                         <td>{{ row.reporter }}</td>
-                        <td>{{ row.created_at }}</td>
+                        <td>{{ row.created_at|format_datetime }}</td>
                     </tr>
 
                     {% endfor %}
@@ -471,69 +471,272 @@ Built using Python • Flask • SQLite • Blockchain
 
 <script>
 
-async function loadStats(){
+let severityChart = null;
 
-const response=await fetch("/stats");
+async function loadStats() {
 
-const data=await response.json();
+    try {
 
-document.getElementById("totalThreats").innerHTML=data.total_reports;
+        const response = await fetch(
+            "/stats?t=" + Date.now(),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
 
-document.getElementById("criticalThreats").innerHTML=data.critical;
+        if (!response.ok) {
+            throw new Error(
+                "Stats API returned " + response.status
+            );
+        }
 
-document.getElementById("blocks").innerHTML=data.blockchain_blocks;
+        const data = await response.json();
 
-document.getElementById("status").innerHTML="Valid";
+        console.log("========== LIVE STATS ==========");
+        console.log(
+            "TOTAL REPORTS FROM SERVER:",
+            data.total_reports
+        );
+        console.log(
+            "BLOCKCHAIN BLOCKS:",
+            data.blockchain_blocks
+        );
+        console.log("FULL DATA:", data);
+        console.log("================================");
 
-document.getElementById("systemStatus").innerHTML="Running";
 
-document.getElementById("chainStatus").innerHTML="Verified";
+        // ==========================================
+        // TOTAL THREATS
+        // ==========================================
 
-document.getElementById("latestBlock").innerHTML=data.blockchain_blocks;
+        const totalElement =
+            document.getElementById("totalThreats");
 
-document.getElementById("health").innerHTML="Healthy";
+        if (totalElement) {
 
-new Chart(
+            totalElement.textContent =
+                String(data.total_reports ?? 0);
 
-document.getElementById("severityChart"),
+            console.log(
+                "TOTAL THREATS DISPLAYED:",
+                totalElement.textContent
+            );
+        }
 
-{
 
-type:"bar",
+        // ==========================================
+        // CRITICAL
+        // ==========================================
 
-data:{
+        const criticalElement =
+            document.getElementById("criticalThreats");
 
-labels:["Critical","High","Medium","Low"],
+        if (criticalElement) {
 
-datasets:[{
+            criticalElement.textContent =
+                String(data.critical ?? 0);
+        }
 
-label:"Threat Count",
 
-data:[
+        // ==========================================
+        // BLOCKCHAIN BLOCKS
+        // ==========================================
 
-data.critical,
+        const blocksElement =
+            document.getElementById("blocks");
 
-data.high,
+        if (blocksElement) {
 
-data.medium,
+            blocksElement.textContent =
+                String(data.blockchain_blocks ?? 0);
+        }
 
-data.low
 
-]
+        // ==========================================
+        // BLOCKCHAIN STATUS
+        // ==========================================
 
-}]
+        const statusElement =
+            document.getElementById("status");
 
+        if (statusElement) {
+
+            statusElement.textContent =
+                data.blockchain_valid
+                    ? "Valid"
+                    : "Invalid";
+        }
+
+
+        // ==========================================
+        // LATEST THREAT REPORT COUNT
+        // ==========================================
+
+        const latestThreatCount =
+            document.getElementById("latestThreatCount");
+
+        if (latestThreatCount) {
+
+            latestThreatCount.textContent =
+                "(" + (data.total_reports ?? 0) + ")";
+        }
+
+
+        // ==========================================
+        // LIVE DASHBOARD
+        // ==========================================
+
+        const systemStatus =
+            document.getElementById("systemStatus");
+
+        if (systemStatus) {
+
+            systemStatus.textContent =
+                "Running";
+        }
+
+
+        const chainStatus =
+            document.getElementById("chainStatus");
+
+        if (chainStatus) {
+
+            chainStatus.textContent =
+                data.blockchain_valid
+                    ? "Verified"
+                    : "Invalid";
+        }
+
+
+        const latestBlock =
+            document.getElementById("latestBlock");
+
+        if (latestBlock) {
+
+            latestBlock.textContent =
+                String(data.blockchain_blocks ?? 0);
+        }
+
+
+        const health =
+            document.getElementById("health");
+
+        if (health) {
+
+            health.textContent =
+                "Healthy";
+        }
+
+
+        // ==========================================
+        // THREAT STATISTICS CHART
+        // ==========================================
+
+        const chartElement =
+            document.getElementById("severityChart");
+
+        if (chartElement) {
+
+            if (severityChart) {
+
+                severityChart.destroy();
+            }
+
+            severityChart = new Chart(
+                chartElement,
+                {
+                    type: "bar",
+
+                    data: {
+
+                        labels: [
+                            "Critical",
+                            "High",
+                            "Medium",
+                            "Low"
+                        ],
+
+                        datasets: [
+                            {
+                                label: "Threat Count",
+
+                                data: [
+                                    data.critical ?? 0,
+                                    data.high ?? 0,
+                                    data.medium ?? 0,
+                                    data.low ?? 0
+                                ]
+                            }
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "STATS UPDATE ERROR:",
+            error
+        );
+
+
+        const systemStatus =
+            document.getElementById("systemStatus");
+
+        if (systemStatus) {
+
+            systemStatus.textContent =
+                "Error";
+        }
+
+
+        const chainStatus =
+            document.getElementById("chainStatus");
+
+        if (chainStatus) {
+
+            chainStatus.textContent =
+                "Unavailable";
+        }
+    }
 }
 
-}
 
-);
-
-}
+// ==========================================
+// INITIAL LOAD
+// ==========================================
 
 loadStats();
 
-</script>
 
+// ==========================================
+// AUTO REFRESH EVERY 5 SECONDS
+// ==========================================
+
+setInterval(
+    loadStats,
+    5000
+);
+
+</script>
 </body>
 </html>
