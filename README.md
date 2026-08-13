@@ -293,11 +293,11 @@ Add screenshots of:
 
 ## 👨‍💻 Developed By
 
-**Name:** Your Name
+**Name:** Gaganshekar C
 
 **Course:** Master of Computer Applications (MCA)
 
-**Academic Year:** 2026
+**Academic Year:** 2024
 
 ---
 
