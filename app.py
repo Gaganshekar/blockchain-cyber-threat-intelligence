@@ -336,207 +336,178 @@ def rebuild_blockchain():
 
     global blockchain
 
-    blockchain = Blockchain()
-
-    try:
-        threats = database.get_all_threats()
-    except Exception:
-        return
-
-    try:
-        database.clear_blockchain_table()
-    except Exception:
-        return
-
-    seen = set()
-
-    for threat in threats:
-
-        key = (
-            threat["title"],
-            threat["indicator"]
-        )
-
-        if key in seen:
-            continue
-
-        seen.add(key)
-
-        block_data = {
-            "title": threat["title"],
-            "category": threat["category"],
-            "severity": threat["severity"],
-            "indicator": threat["indicator"],
-            "description": threat["description"],
-            "reporter": threat["reporter"]
-        }
-
-        try:
-
-            timestamp = threat.get("created_at")
-
-            block = blockchain.add_block(
-                block_data,
-                timestamp=timestamp
-            )
-
-            database.save_block(
-                block.index,
-                block.previous_hash,
-                block.hash,
-                block.nonce,
-                block.timestamp,
-                block.data
-            )
-
-            database.update_block_index(
-                threat["id"],
-                block.index
-            )
-
-        except Exception:
-            continue
-    # --------------------------------------------------
-    # Get threats from database
-    # --------------------------------------------------
+    print()
+    print("=" * 70)
+    print("REBUILDING BLOCKCHAIN")
+    print("=" * 70)
 
     try:
 
-        threats = database.get_all_threats()
+        # ==================================================
+        # GET THREATS IN ORIGINAL DATABASE ORDER
+        # ==================================================
+
+        threats = database.export_data()
 
         print(
-            "THREATS FOUND:",
+            "Threat records found:",
             len(threats)
         )
 
-    except Exception as error:
+        # ==================================================
+        # CREATE FRESH BLOCKCHAIN
+        # Genesis block = 0
+        # ==================================================
 
-        print(
-            "BLOCKCHAIN REBUILD DATABASE ERROR:",
-            error
-        )
+        blockchain = Blockchain()
 
-        return
-
-    # --------------------------------------------------
-    # Clear stored blockchain
-    # --------------------------------------------------
-
-    try:
+        # ==================================================
+        # CLEAR OLD BLOCKCHAIN RECORDS
+        # ==================================================
 
         database.clear_blockchain_table()
 
+        seen = set()
+        block_count = 0
+
+        # ==================================================
+        # IMPORTANT:
+        # DO NOT USE reversed(threats)
+        #
+        # Oldest threat gets block 1
+        # Newest threat gets highest block number
+        # ==================================================
+
+        for threat in threats:
+
+            key = (
+                str(
+                    threat["title"] or ""
+                ).strip().lower(),
+
+                str(
+                    threat["indicator"] or ""
+                ).strip().lower()
+            )
+
+            # Skip duplicate threats
+            if key in seen:
+                continue
+
+            seen.add(key)
+
+            block_data = {
+
+                "title": threat["title"],
+
+                "category": threat["category"],
+
+                "severity": threat["severity"],
+
+                "indicator": threat["indicator"],
+
+                "description": threat["description"],
+
+                "reporter": threat["reporter"]
+
+            }
+
+            try:
+
+                block = blockchain.add_block(
+                    block_data
+                )
+
+                # ==================================================
+                # SAVE BLOCK TO DATABASE
+                # ==================================================
+
+                database.save_block(
+
+                    block.index,
+
+                    block.previous_hash,
+
+                    block.hash,
+
+                    block.nonce,
+
+                    block.timestamp,
+
+                    block.data
+
+                )
+
+                # ==================================================
+                # UPDATE THREAT WITH CORRECT BLOCK NUMBER
+                # ==================================================
+
+                database.update_block_index(
+
+                    threat["id"],
+
+                    block.index
+
+                )
+
+                block_count += 1
+
+                print(
+                    f"Block {block.index} -> "
+                    f"{threat['title']} -> "
+                    f"{threat['indicator']}"
+                )
+
+            except Exception as error:
+
+                print(
+                    "BLOCK CREATION ERROR:",
+                    error
+                )
+
+        print()
+        print(
+            "Threat blocks created:",
+            block_count
+        )
+
+        print(
+            "Genesis block:",
+            0
+        )
+
+        print(
+            "Total blockchain chain length:",
+            len(blockchain.chain)
+        )
+
+        print(
+            "Latest block:",
+            blockchain.get_latest_block().index
+        )
+
+        print(
+            "Blockchain valid:",
+            blockchain.is_chain_valid()
+        )
+
+        print("=" * 70)
+        print("BLOCKCHAIN REBUILD COMPLETE")
+        print("=" * 70)
+        print()
+
+        return True
+
     except Exception as error:
 
         print(
-            "BLOCKCHAIN CLEAR ERROR:",
+            "BLOCKCHAIN REBUILD ERROR:",
             error
         )
 
-        return
+        blockchain = Blockchain()
 
-    # --------------------------------------------------
-    # Rebuild blocks
-    # --------------------------------------------------
-
-    seen = set()
-
-    for threat in threats:
-
-        key = (
-            threat["title"],
-            threat["indicator"]
-        )
-
-        if key in seen:
-
-            continue
-
-        seen.add(key)
-
-        block_data = {
-
-            "title":
-                threat["title"],
-
-            "category":
-                threat["category"],
-
-            "severity":
-                threat["severity"],
-
-            "indicator":
-                threat["indicator"],
-
-            "description":
-                threat["description"],
-
-            "reporter":
-                threat["reporter"]
-        }
-
-        try:
-
-            # --------------------------------------------------
-            # Preserve original database timestamp
-            # --------------------------------------------------
-
-            timestamp = threat.get(
-                "created_at"
-            )
-
-
-            block = blockchain.add_block(
-
-                block_data,
-
-                timestamp=timestamp
-            )
-
-            database.save_block(
-
-                block.index,
-
-                block.previous_hash,
-
-                block.hash,
-
-                block.nonce,
-
-                block.timestamp,
-
-                block.data
-            )
-
-            database.update_block_index(
-
-                threat["id"],
-
-                block.index
-            )
-
-        except Exception as error:
-
-            print(
-                "BLOCKCHAIN REBUILD BLOCK ERROR:",
-                repr(error)
-            )
-
-    print()
-    print("=" * 70)
-    print(
-        "BLOCKCHAIN REBUILD COMPLETE"
-    )
-    print(
-        "TOTAL BLOCKS:",
-        len(blockchain.chain)
-    )
-    print(
-        "VALID:",
-        blockchain.is_chain_valid()
-    )
-    print("=" * 70)
-    print()
+        raise
 # ==================================================
 # HOME PAGE
 # ==================================================
@@ -1842,6 +1813,7 @@ def clean_blockchain():
         database.clear_blockchain_table()
 
         blockchain = Blockchain()
+        
 
         flash(
             "Blockchain cleaned successfully.",
@@ -2178,10 +2150,39 @@ def time_test():
 
 if __name__ == "__main__":
 
-    # Local development server
+    # ==================================================
+    # RESTORE BLOCKCHAIN QUIETLY
+    # ==================================================
+
+    try:
+
+        rebuild_blockchain(
+            verbose=False
+        )
+
+        print(
+            "Blockchain restored successfully."
+        )
+
+    except Exception as error:
+
+        print(
+            "Blockchain restore failed:",
+            error
+        )
+
+    # ==================================================
+    # START FLASK
+    # ==================================================
+
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
+        port=int(
+            os.environ.get(
+                "PORT",
+                5000
+            )
+        ),
         debug=False,
         use_reloader=False
     )

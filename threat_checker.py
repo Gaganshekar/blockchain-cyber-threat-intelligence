@@ -31,101 +31,307 @@ class ThreatChecker:
 
         # ==================================================
         # DEMO MALICIOUS INDICATORS
-        #
-        # These are synthetic indicators for your MCA
-        # project demonstration. They are NOT real
-        # malicious infrastructure.
+        # 14 PROJECT THREATS
         # ==================================================
 
         self.demo_threats = {
 
-    # ==================================================
-    # MALICIOUS URL
-    # ==================================================
+            # ==================================================
+            # 1. BOTNET COMMAND AND CONTROL ACTIVITY
+            # ==================================================
 
-    "http://login-verify-password-reset-test.example": {
-        "type": "url",
-        "score": 95,
-        "confidence": 98,
-        "status": "Critical",
-        "threat_type": "Phishing",
-        "reason": (
-            "Synthetic phishing URL detected. "
-            "Credential and password-reset terminology "
-            "indicates a phishing threat."
-        )
-    },
+            "203.0.113.50": {
+                "type": "ip",
+                "score": 98,
+                "confidence": 99,
+                "status": "Critical",
+                "threat_type": "Botnet",
+                "reason": (
+                    "Synthetic botnet command-and-control IP "
+                    "indicator detected. This indicator is used "
+                    "for cybersecurity threat intelligence "
+                    "demonstration."
+                )
+            },
 
-    # ==================================================
-    # MALICIOUS DOMAIN
-    # ==================================================
+            # ==================================================
+            # 2. FAKE BANKING LOGIN PAGE
+            # ==================================================
 
-    "login-verify-account-security-test.example": {
-        "type": "domain",
-        "score": 92,
-        "confidence": 97,
-        "status": "Critical",
-        "threat_type": "Phishing",
-        "reason": (
-            "Synthetic phishing domain detected. "
-            "Account verification and security terminology "
-            "indicates a phishing threat."
-        )
-    },
+            "fakebanking.com": {
+                "type": "domain",
+                "score": 85,
+                "confidence": 95,
+                "status": "Critical",
+                "threat_type": "Phishing",
+                "reason": (
+                    "Synthetic phishing domain detected. "
+                    "The domain represents a fake banking login "
+                    "page designed to steal usernames, passwords "
+                    "and OTPs."
+                )
+            },
 
-    # ==================================================
-    # MALICIOUS IP
-    # ==================================================
+            # ==================================================
+            # 3. RANSOMWARE ATTACK DETECTED
+            # ==================================================
 
-    "203.0.113.50": {
-        "type": "ip",
-        "score": 98,
-        "confidence": 99,
-        "status": "Critical",
-        "threat_type": "Malware / C2",
-        "reason": (
-            "Synthetic command-and-control IP indicator "
-            "used for cybersecurity demonstration."
-        )
-    },
+            "ransomware-test.com": {
+                "type": "domain",
+                "score": 98,
+                "confidence": 99,
+                "status": "Critical",
+                "threat_type": "Ransomware",
+                "reason": (
+                    "Synthetic ransomware indicator detected. "
+                    "The domain represents ransomware activity "
+                    "used for cybersecurity testing."
+                )
+            },
 
-    # ==================================================
-    # MALICIOUS EMAIL
-    # ==================================================
+            # ==================================================
+            # 4. SQL INJECTION ATTACK
+            # ==================================================
 
-    "urgent-security-alert@phishing-test.example": {
-        "type": "email",
-        "score": 90,
-        "confidence": 96,
-        "status": "Critical",
-        "threat_type": "Phishing",
-        "reason": (
-            "Synthetic phishing email indicator detected. "
-            "The address contains security-alert and "
-            "phishing-related terminology."
-        )
-    },
+            "http://sql-injection-test.example": {
+                "type": "url",
+                "score": 95,
+                "confidence": 98,
+                "status": "Critical",
+                "threat_type": "SQL Injection",
+                "reason": (
+                    "Synthetic SQL injection URL indicator "
+                    "detected. The indicator represents a "
+                    "malicious web endpoint used for SQL "
+                    "injection attack demonstration."
+                )
+            },
 
-    # ==================================================
-    # MALICIOUS SHA-256
-    # ==================================================
+            # ==================================================
+            # 5. MALWARE FILE HASH DETECTION
+            # ==================================================
 
-    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
-        "type": "hash",
-        "score": 100,
-        "confidence": 100,
-        "status": "Critical",
-        "threat_type": "Malware",
-        "reason": (
-            "Synthetic malicious SHA-256 indicator used "
-            "for cybersecurity demonstration."
-        )
-    }
-}
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+                "type": "hash",
+                "score": 100,
+                "confidence": 100,
+                "status": "Critical",
+                "threat_type": "Trojan",
+                "reason": (
+                    "Synthetic malicious SHA-256 hash detected. "
+                    "The hash is included as a demonstration "
+                    "indicator for malware and Trojan threat "
+                    "intelligence."
+                )
+            },
 
-    # ==================================================
+            # ==================================================
+            # 6. FAKE MICROSOFT OFFICE ACTIVATION SCAM
+            # ==================================================
+
+            "office-activation-test.example": {
+                "type": "domain",
+                "score": 95,
+                "confidence": 98,
+                "status": "Critical",
+                "threat_type": "Phishing",
+                "reason": (
+                    "Synthetic Microsoft Office activation scam "
+                    "indicator detected. The domain represents "
+                    "a fake activation page designed to deceive "
+                    "users."
+                )
+            },
+
+            # ==================================================
+            # 7. SUSPICIOUS BROWSER EXTENSION ACTIVITY
+            # ==================================================
+
+            "browser-extension-spyware.example": {
+                "type": "domain",
+                "score": 92,
+                "confidence": 97,
+                "status": "Critical",
+                "threat_type": "Spyware",
+                "reason": (
+                    "Synthetic spyware indicator detected. "
+                    "The domain represents a suspicious browser "
+                    "extension associated with potentially "
+                    "unauthorized monitoring or data collection."
+                )
+            },
+
+            # ==================================================
+            # 8. SUSPICIOUS POWERSHELL SCRIPT EXECUTION
+            # ==================================================
+
+            "http://powershell-malware-test.example": {
+                "type": "url",
+                "score": 94,
+                "confidence": 98,
+                "status": "Critical",
+                "threat_type": "Malware",
+                "reason": (
+                    "Synthetic malicious PowerShell execution "
+                    "indicator detected. The URL represents a "
+                    "test endpoint used for malware execution "
+                    "demonstration."
+                )
+            },
+
+            # ==================================================
+            # 9. WANNACRY RANSOMWARE ATTACK
+            # ==================================================
+
+            "wannacry-test.example": {
+                "type": "domain",
+                "score": 100,
+                "confidence": 100,
+                "status": "Critical",
+                "threat_type": "Ransomware",
+                "reason": (
+                    "Synthetic WannaCry ransomware indicator "
+                    "detected. The domain is used for "
+                    "cybersecurity threat intelligence "
+                    "demonstration."
+                )
+            },
+
+            # ==================================================
+            # 10. MIRAI BOTNET COMMAND SERVER
+            # ==================================================
+
+            "198.51.100.77": {
+                "type": "ip",
+                "score": 94,
+                "confidence": 98,
+                "status": "Critical",
+                "threat_type": "Botnet",
+                "reason": (
+                    "Synthetic Mirai botnet command-server IP "
+                    "indicator detected. The IP is used for "
+                    "cybersecurity threat intelligence "
+                    "demonstration."
+                )
+            },
+
+            # ==================================================
+            # 11. ZEUS BANKING TROJAN
+            # ==================================================
+
+            "zeus-banking-trojan.example": {
+                "type": "domain",
+                "score": 97,
+                "confidence": 99,
+                "status": "Critical",
+                "threat_type": "Trojan",
+                "reason": (
+                    "Synthetic Zeus banking Trojan indicator "
+                    "detected. The domain represents a banking "
+                    "malware test indicator used for "
+                    "cybersecurity demonstration."
+                )
+            },
+
+            # ==================================================
+            # 12. PHISHING LOGIN CAMPAIGN
+            # ==================================================
+
+            "http://phishing-login-test.example": {
+                "type": "url",
+                "score": 95,
+                "confidence": 98,
+                "status": "Critical",
+                "threat_type": "Phishing",
+                "reason": (
+                    "Synthetic phishing login campaign indicator "
+                    "detected. The URL represents a fraudulent "
+                    "login endpoint designed for credential "
+                    "theft demonstration."
+                )
+            },
+
+            "test-login-example.com": {
+                "type": "domain",
+                "score": 90,
+                "confidence": 97,
+                "status": "Critical",
+                "threat_type": "Phishing",
+                "reason": (
+                    "Synthetic phishing test domain detected. "
+                    "The domain represents a simulated fraudulent "
+                    "login page used for cybersecurity threat "
+                    "detection and demonstration."
+                )
+            },
+
+            # ==================================================
+            # 13. MALWARE COMMAND AND CONTROL ACTIVITY
+            # ==================================================
+
+            "192.0.2.123": {
+                "type": "ip",
+                "score": 96,
+                "confidence": 99,
+                "status": "Critical",
+                "threat_type": "Malware",
+                "reason": (
+                    "Synthetic malware command-and-control IP "
+                    "indicator detected. The IP is used for "
+                    "cybersecurity threat intelligence testing."
+                )
+            },
+
+            # ==================================================
+            # 14. TEST SUSPICIOUS LOGIN
+            # ==================================================
+
+            "suspicious-login-test.example": {
+                "type": "domain",
+                "score": 90,
+                "confidence": 97,
+                "status": "Critical",
+                "threat_type": "Phishing",
+                "reason": (
+                    "Synthetic suspicious login indicator "
+                    "detected. The domain represents a phishing "
+                    "test indicator used for login-threat "
+                    "detection demonstration."
+                )
+            }
+        }
+
+        # ==================================================
+        # CATEGORY SCORES
+        # ==================================================
+
+        self.category_scores = {
+            "phishing": 25,
+            "malware": 30,
+            "ransomware": 35,
+            "trojan": 30,
+            "spyware": 30,
+            "botnet": 30,
+            "ddos": 25,
+            "exploit": 30,
+            "backdoor": 30,
+            "virus": 30
+        }
+
+        # ==================================================
+        # SEVERITY SCORES
+        # ==================================================
+
+        self.severity_scores = {
+            "low": 5,
+            "medium": 15,
+            "high": 25,
+            "critical": 35
+        }
+
+    # ======================================================
     # MAIN CHECK FUNCTION
-    # ==================================================
+    # ======================================================
 
     def check(
         self,
@@ -176,7 +382,57 @@ class ThreatChecker:
             )
 
         # ==================================================
-        # NORMALIZE
+        # VALID INDICATOR TYPES
+        # ==================================================
+
+        valid_types = {
+            "url",
+            "domain",
+            "ip",
+            "email",
+            "hash",
+            "sha256",
+            "sha-256",
+            "md5",
+            "sha1",
+            "sha-1"
+        }
+
+        # ==================================================
+        # BACKWARD COMPATIBILITY
+        # ==================================================
+
+        if indicator_type not in valid_types:
+
+            possible_category = indicator_type
+
+            detected_type = self.detect_indicator_type(
+                value
+            )
+
+            if possible_category in self.category_scores:
+
+                if not category:
+                    category = possible_category
+
+            indicator_type = detected_type
+
+        # ==================================================
+        # NORMALIZE HASH TYPES
+        # ==================================================
+
+        if indicator_type in {
+            "sha256",
+            "sha-256",
+            "sha1",
+            "sha-1",
+            "md5"
+        }:
+
+            indicator_type = "hash"
+
+        # ==================================================
+        # NORMALIZE INDICATOR
         # ==================================================
 
         normalized = self.normalize_indicator(
@@ -185,7 +441,7 @@ class ThreatChecker:
         )
 
         # ==================================================
-        # DEMO MALICIOUS DATABASE
+        # DEMO THREAT CHECK
         # ==================================================
 
         demo = self.demo_threats.get(
@@ -202,16 +458,19 @@ class ThreatChecker:
                     "status": demo["status"],
                     "score": demo["score"],
                     "confidence": demo["confidence"],
-                    "threat_type": demo.get("threat_type", "Unknown"),
+                    "threat_type": demo.get(
+                        "threat_type",
+                        "Unknown"
+                    ),
                     "reason": demo["reason"],
                     "recommendation": (
                         "Critical threat detected. "
-                         "Do not interact with this indicator. "
+                        "Do not interact with this indicator. "
                         "Block or isolate it if appropriate."
                     )
                 }
 
-                # ==================================================
+        # ==================================================
         # TRUSTED DOMAIN CHECK
         # ==================================================
 
@@ -234,7 +493,7 @@ class ThreatChecker:
                     "status": "Safe",
                     "score": 0,
                     "confidence": 100,
-                    "threat_type": "General Threat",
+                    "threat_type": "Trusted Domain",
                     "reason": (
                         "The domain matches the project's "
                         "trusted-domain list and no suspicious "
@@ -245,6 +504,7 @@ class ThreatChecker:
                         "This indicator is verified as trusted."
                     )
                 }
+
         # ==================================================
         # GENERAL HEURISTIC ANALYSIS
         # ==================================================
@@ -252,9 +512,9 @@ class ThreatChecker:
         score = 0
         reasons = []
 
-        # --------------------------------------------------
+        # ==================================================
         # TYPE-SPECIFIC ANALYSIS
-        # --------------------------------------------------
+        # ==================================================
 
         if indicator_type == "url":
 
@@ -303,21 +563,9 @@ class ThreatChecker:
         # CATEGORY ANALYSIS
         # ==================================================
 
-        category_scores = {
+        if category in self.category_scores:
 
-            "phishing": 25,
-            "malware": 30,
-            "ransomware": 35,
-            "trojan": 30,
-            "spyware": 30,
-            "ddos": 25,
-            "botnet": 30
-
-        }
-
-        if category in category_scores:
-
-            score += category_scores[
+            score += self.category_scores[
                 category
             ]
 
@@ -330,18 +578,9 @@ class ThreatChecker:
         # SEVERITY ANALYSIS
         # ==================================================
 
-        severity_scores = {
+        if severity in self.severity_scores:
 
-            "low": 5,
-            "medium": 15,
-            "high": 25,
-            "critical": 35
-
-        }
-
-        if severity in severity_scores:
-
-            score += severity_scores[
+            score += self.severity_scores[
                 severity
             ]
 
@@ -366,8 +605,12 @@ class ThreatChecker:
             "exploit",
             "malicious",
             "fraud",
-            "scam"
-
+            "scam",
+            "virus",
+            "backdoor",
+            "credential",
+            "stealing",
+            "stealer"
         }
 
         title_words = set(
@@ -377,16 +620,16 @@ class ThreatChecker:
             )
         )
 
-        matches = (
+        title_matches = (
             title_words
             & suspicious_title_words
         )
 
-        if matches:
+        if title_matches:
 
             score += min(
-                len(matches) * 5,
-                15
+                len(title_matches) * 8,
+                20
             )
 
             reasons.append(
@@ -405,9 +648,6 @@ class ThreatChecker:
             "ransomware",
             "trojan",
             "spyware",
-            "credential theft",
-            "password theft",
-            "exploit",
             "payload",
             "command and control",
             "c2",
@@ -416,8 +656,16 @@ class ThreatChecker:
             "attack",
             "compromised",
             "fraud",
-            "scam"
-
+            "scam",
+            "credential theft",
+            "password theft",
+            "data theft",
+            "steal passwords",
+            "steals passwords",
+            "financial information",
+            "otp",
+            "unauthorized access",
+            "remote access"
         }
 
         description_matches = 0
@@ -431,13 +679,57 @@ class ThreatChecker:
         if description_matches:
 
             score += min(
-                description_matches * 5,
-                20
+                description_matches * 6,
+                25
             )
 
             reasons.append(
                 "Threat description contains "
                 "suspicious characteristics."
+            )
+
+        # ==================================================
+        # COMBINED MALICIOUS SIGNAL
+        # ==================================================
+
+        strong_signals = 0
+
+        if category in {
+            "malware",
+            "ransomware",
+            "trojan",
+            "spyware",
+            "botnet",
+            "phishing",
+            "backdoor",
+            "exploit",
+            "virus"
+        }:
+
+            strong_signals += 1
+
+        if severity in {
+            "high",
+            "critical"
+        }:
+
+            strong_signals += 1
+
+        if title_matches:
+
+            strong_signals += 1
+
+        if description_matches >= 2:
+
+            strong_signals += 1
+
+        if strong_signals >= 3:
+
+            score += 15
+
+            reasons.append(
+                "Multiple strong threat indicators "
+                "were detected."
             )
 
         # ==================================================
@@ -475,8 +767,12 @@ class ThreatChecker:
 
         if reasons:
 
+            unique_reasons = list(
+                dict.fromkeys(reasons)
+            )
+
             reason = " ".join(
-                reasons
+                unique_reasons
             )
 
         else:
@@ -494,6 +790,22 @@ class ThreatChecker:
             score
         )
 
+        # ==================================================
+        # THREAT TYPE
+        # ==================================================
+
+        if category:
+
+            threat_type = category.title()
+
+        else:
+
+            threat_type = "General Threat"
+
+        # ==================================================
+        # FINAL RESULT
+        # ==================================================
+
         return {
 
             "indicator": value,
@@ -506,7 +818,7 @@ class ThreatChecker:
 
             "confidence": confidence,
 
-            "threat_type": category.title() if category else "General Threat",
+            "threat_type": threat_type,
 
             "reason": reason,
 
@@ -514,9 +826,105 @@ class ThreatChecker:
 
         }
 
-    # ==================================================
+    # ======================================================
+    # DETECT INDICATOR TYPE
+    # ======================================================
+
+    def detect_indicator_type(
+        self,
+        value
+    ):
+
+        value = str(
+            value or ""
+        ).strip()
+
+        # --------------------------------------------------
+        # EMAIL
+        # --------------------------------------------------
+
+        if re.fullmatch(
+            r"[^@\s]+@[^@\s]+\.[^@\s]+",
+            value
+        ):
+
+            return "email"
+
+        # --------------------------------------------------
+        # IP
+        # --------------------------------------------------
+
+        try:
+
+            ipaddress.ip_address(
+                value
+            )
+
+            return "ip"
+
+        except ValueError:
+
+            pass
+
+        # --------------------------------------------------
+        # HASH
+        # --------------------------------------------------
+
+        if re.fullmatch(
+            r"[A-Fa-f0-9]{32}",
+            value
+        ):
+
+            return "hash"
+
+        if re.fullmatch(
+            r"[A-Fa-f0-9]{40}",
+            value
+        ):
+
+            return "hash"
+
+        if re.fullmatch(
+            r"[A-Fa-f0-9]{64}",
+            value
+        ):
+
+            return "hash"
+
+        # --------------------------------------------------
+        # URL
+        # --------------------------------------------------
+
+        lowered = value.lower()
+
+        if (
+            lowered.startswith("http://")
+            or lowered.startswith("https://")
+            or lowered.startswith("www.")
+        ):
+
+            return "url"
+
+        # --------------------------------------------------
+        # DOMAIN
+        # --------------------------------------------------
+
+        if re.fullmatch(
+            r"[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+            value
+        ):
+
+            return "domain"
+
+        # --------------------------------------------------
+        # DEFAULT
+        # --------------------------------------------------
+
+        return "unknown"
+
+    # ======================================================
     # NORMALIZE INDICATOR
-    # ==================================================
+    # ======================================================
 
     def normalize_indicator(
         self,
@@ -528,13 +936,13 @@ class ThreatChecker:
 
         if indicator_type == "url":
 
-            return value.rstrip("/")
+            value = value.rstrip("/")
 
         return value
 
-    # ==================================================
+    # ======================================================
     # EXTRACT HOSTNAME
-    # ==================================================
+    # ======================================================
 
     def extract_hostname(
         self,
@@ -561,9 +969,9 @@ class ThreatChecker:
 
             return ""
 
-    # ==================================================
+    # ======================================================
     # TRUSTED DOMAIN
-    # ==================================================
+    # ======================================================
 
     def is_trusted_domain(
         self,
@@ -589,9 +997,9 @@ class ThreatChecker:
 
         return False
 
-    # ==================================================
+    # ======================================================
     # URL CHECK
-    # ==================================================
+    # ======================================================
 
     def check_url(
         self,
@@ -611,7 +1019,10 @@ class ThreatChecker:
                 parsed.hostname or ""
             ).lower()
 
+            # --------------------------------------------------
             # HTTP
+            # --------------------------------------------------
+
             if parsed.scheme.lower() == "http":
 
                 score += 10
@@ -620,7 +1031,10 @@ class ThreatChecker:
                     "URL uses unencrypted HTTP."
                 )
 
-            # @ symbol
+            # --------------------------------------------------
+            # @ SYMBOL
+            # --------------------------------------------------
+
             if "@" in parsed.netloc:
 
                 score += 15
@@ -629,7 +1043,10 @@ class ThreatChecker:
                     "URL contains an embedded username."
                 )
 
-            # Long URL
+            # --------------------------------------------------
+            # LONG URL
+            # --------------------------------------------------
+
             if len(value) > 100:
 
                 score += 10
@@ -638,7 +1055,10 @@ class ThreatChecker:
                     "URL is unusually long."
                 )
 
-            # Suspicious terms
+            # --------------------------------------------------
+            # SUSPICIOUS TERMS
+            # --------------------------------------------------
+
             suspicious_terms = {
 
                 "login",
@@ -653,8 +1073,11 @@ class ThreatChecker:
                 "wallet",
                 "payment",
                 "credential",
-                "reset"
-
+                "reset",
+                "signin",
+                "authenticate",
+                "security-alert",
+                "phishing"
             }
 
             matches = [
@@ -666,8 +1089,8 @@ class ThreatChecker:
             if matches:
 
                 score += min(
-                    len(matches) * 5,
-                    30
+                    len(matches) * 6,
+                    35
                 )
 
                 reasons.append(
@@ -675,7 +1098,10 @@ class ThreatChecker:
                     "associated with phishing."
                 )
 
-            # Deep subdomain
+            # --------------------------------------------------
+            # DEEP SUBDOMAIN
+            # --------------------------------------------------
+
             if hostname.count(".") >= 4:
 
                 score += 10
@@ -683,6 +1109,18 @@ class ThreatChecker:
                 reasons.append(
                     "URL contains an unusually "
                     "deep subdomain structure."
+                )
+
+            # --------------------------------------------------
+            # MANY HYPHENS
+            # --------------------------------------------------
+
+            if hostname.count("-") >= 3:
+
+                score += 10
+
+                reasons.append(
+                    "URL hostname contains multiple hyphens."
                 )
 
         except Exception:
@@ -695,9 +1133,9 @@ class ThreatChecker:
 
         return score
 
-    # ==================================================
+    # ======================================================
     # DOMAIN CHECK
-    # ==================================================
+    # ======================================================
 
     def check_domain(
         self,
@@ -713,6 +1151,7 @@ class ThreatChecker:
 
             "login",
             "verify",
+            "verification",
             "secure",
             "account",
             "update",
@@ -721,8 +1160,13 @@ class ThreatChecker:
             "bank",
             "credential",
             "password",
-            "reset"
-
+            "reset",
+            "signin",
+            "security",
+            "phishing",
+            "malware",
+            "attack",
+            "confirm"
         }
 
         matches = [
@@ -734,8 +1178,8 @@ class ThreatChecker:
         if matches:
 
             score += min(
-                len(matches) * 5,
-                30
+                len(matches) * 6,
+                35
             )
 
             reasons.append(
@@ -761,9 +1205,9 @@ class ThreatChecker:
 
         return score
 
-    # ==================================================
+    # ======================================================
     # IP CHECK
-    # ==================================================
+    # ======================================================
 
     def check_ip(
         self,
@@ -815,9 +1259,9 @@ class ThreatChecker:
 
             return 30
 
-    # ==================================================
+    # ======================================================
     # EMAIL CHECK
-    # ==================================================
+    # ======================================================
 
     def check_email(
         self,
@@ -836,6 +1280,10 @@ class ThreatChecker:
 
         except ValueError:
 
+            reasons.append(
+                "Invalid email address format."
+            )
+
             return 30
 
         suspicious_terms = {
@@ -850,8 +1298,10 @@ class ThreatChecker:
             "admin",
             "password",
             "reset",
-            "urgent"
-
+            "urgent",
+            "phishing",
+            "fraud",
+            "scam"
         }
 
         matches = [
@@ -864,12 +1314,28 @@ class ThreatChecker:
 
             score += min(
                 len(matches) * 10,
-                30
+                35
             )
 
             reasons.append(
                 "Email address contains "
                 "security/phishing-related terms."
+            )
+
+        suspicious_domains = {
+
+            "phishing-test.example",
+            "malware-test.example",
+            "example.com"
+        }
+
+        if domain in suspicious_domains:
+
+            score += 30
+
+            reasons.append(
+                "Email uses a suspicious or "
+                "demonstration threat domain."
             )
 
         if len(local_part) > 30:
@@ -882,15 +1348,17 @@ class ThreatChecker:
 
         return score
 
-    # ==================================================
+    # ======================================================
     # HASH CHECK
-    # ==================================================
+    # ======================================================
 
     def check_hash(
         self,
         value,
         reasons
     ):
+
+        # SHA-256
 
         if re.fullmatch(
             r"[A-Fa-f0-9]{64}",
@@ -903,15 +1371,41 @@ class ThreatChecker:
 
             return 5
 
+        # SHA-1
+
+        if re.fullmatch(
+            r"[A-Fa-f0-9]{40}",
+            value
+        ):
+
+            reasons.append(
+                "Valid SHA-1 hash format detected."
+            )
+
+            return 5
+
+        # MD5
+
+        if re.fullmatch(
+            r"[A-Fa-f0-9]{32}",
+            value
+        ):
+
+            reasons.append(
+                "Valid MD5 hash format detected."
+            )
+
+            return 5
+
         reasons.append(
-            "Invalid SHA-256 format."
+            "Invalid hash format."
         )
 
         return 30
 
-    # ==================================================
+    # ======================================================
     # STATUS
-    # ==================================================
+    # ======================================================
 
     def get_status(
         self,
@@ -932,9 +1426,9 @@ class ThreatChecker:
 
         return "Safe"
 
-    # ==================================================
+    # ======================================================
     # CONFIDENCE
-    # ==================================================
+    # ======================================================
 
     def calculate_confidence(
         self,
@@ -977,14 +1471,18 @@ class ThreatChecker:
 
             confidence += 10
 
+        elif score >= 60:
+
+            confidence += 5
+
         return min(
             confidence,
             100
         )
 
-    # ==================================================
+    # ======================================================
     # RECOMMENDATION
-    # ==================================================
+    # ======================================================
 
     def get_recommendation(
         self,
@@ -998,28 +1496,21 @@ class ThreatChecker:
                 "This indicator is verified as trusted."
             )
 
-        if score <= 10:
+        if score < 30:
 
             return (
                 "Low risk. No major suspicious "
                 "characteristics were detected."
             )
 
-        if score <= 30:
-
-            return (
-                "Proceed with caution and verify "
-                "the indicator before interacting."
-            )
-
-        if score <= 60:
+        if score < 60:
 
             return (
                 "Suspicious indicator. "
                 "Verify its source before interacting."
             )
 
-        if score <= 80:
+        if score < 80:
 
             return (
                 "High risk. Avoid interacting with "
@@ -1031,9 +1522,9 @@ class ThreatChecker:
             "indicator. Block or isolate it if appropriate."
         )
 
-    # ==================================================
+    # ======================================================
     # RESULT HELPER
-    # ==================================================
+    # ======================================================
 
     def _result(
         self,
@@ -1046,7 +1537,7 @@ class ThreatChecker:
 
         return {
 
-         "indicator": "",
+            "indicator": "",
 
             "indicator_type": "unknown",
 
